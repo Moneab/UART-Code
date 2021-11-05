@@ -1,0 +1,42 @@
+void main()
+
+{
+int x;
+UART1_Init(9600);  // UART communication set at 9600 bps
+Delay_ms(100);     // 1 mili second delay
+ANSELA = 0xFF;     // PORTA pins set as not digital
+ANSELB = 0;
+ANSELC = 0;
+ANSELD = 0;
+
+TRISA = 0xFF;      // PORTA is input
+TRISB = 0;         // PORTB is output
+TRISC = 0;         // PORTC is output
+TRISD = 0;         // PORTD is output
+
+
+while(1)           // endless loop
+
+{
+
+x = ADC_Read(1);   // MCU will receive analog signal from LDR and convert it to digital variable x
+
+if(x < 1500)
+{
+UART1_Write_Text("No light present");   // for MCU to send data to UART
+UART_write(13);
+UART_write(10);
+PORTD = 0xFF;                           // PORTD is on
+PORTB = 0x00;                           // PORTB is off
+}
+else
+{
+UART1_Write_Text("Light is present");
+UART_write(13);
+UART_write(10);
+PORTD = 0x00;                           // PORTD is off
+PORTB = 0xFF;                           // PORTB is on
+}
+
+}
+}
